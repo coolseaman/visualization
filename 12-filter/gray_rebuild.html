@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gray Demo</title>
+</head>
+<body>
+    <canvas id="canvas" width='0' height='0'></canvas>
+    <script type="module">
+        import { loadImage, getImageData, traverse, gaussianBlur } from './lib/utils.js';
+        import { transformColor, grayscale, channel, brightness, saturate } from './lib/color-matrix.js';
+
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        (async function() {
+            const image = await loadImage('https://p2.ssl.qhimg.com/d/inn/4b7e384c55dc/girl1.jpg');
+            const imageData = getImageData(image);
+            traverse(imageData, ({r, g, b, a}) => {
+                // const v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                // return [v, v, v, a];
+                
+                // 灰度化图片
+                // return transformColor([r, g, b, a], grayscale(0.5));
+                
+                // 增强红色通道，减弱绿色通道
+                // return transformColor([r, g, b, a], channel({r: 1.5, g: 0.75}));
+
+                // 组合颜色矩阵
+                return transformColor(
+                    [r, g, b, a],
+                    channel({r: 1.2}),
+                    brightness(1.2),
+                    saturate(1.2),
+                )
+            });
+
+
+            canvas.width = imageData.width;
+            canvas.height = imageData.height;
+
+            // 高斯模糊
+            gaussianBlur(imageData.data, imageData.width, imageData.height);
+
+            context.putImageData(imageData, 0, 0);
+        }());
+    </script>
+</body>
+</html>
