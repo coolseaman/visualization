@@ -122,3 +122,12 @@ function gaussianMatrix(radius, sigma = radius / 3) {
     }
     return pixels;
 }
+
+export function getPixel(imageData, index) {
+    const {data} = imageData;
+    const r = data[index] / 255,
+      g = data[index + 1] / 255,
+      b = data[index + 2] / 255,
+      a = data[index + 3] / 255;
+    return [r, g, b, a];
+}
